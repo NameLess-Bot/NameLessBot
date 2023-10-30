@@ -1,4 +1,5 @@
 const {ApplicationCommandOptionType} = require("discord.js");
+
 module.exports = {
     Integration: {
         name: 'say',

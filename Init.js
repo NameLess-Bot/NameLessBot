@@ -2,7 +2,7 @@ const { Client, Routes,REST } = require('discord.js');
 const fs = require("fs")
 
 const Config = require("./Config.js")
-const path = require("path");
+const {stat} = require("fs");
 
 let UsedREST;
 let Commands = {}
@@ -12,6 +12,30 @@ const client = new Client({
     intents: Config.Intents
 });
 
+function LoadCommandsFromDirectory(Directory){
+    fs.readdir(Directory, (err, files) => {
+        if (err){
+            console.log("[X] Invalid folder")
+            return
+        }
+
+        files.forEach(File =>{
+            if (File.endsWith(".js")){
+                const Data = require(`${Directory}/${File}`)
+                CommandsShown.push(Data.Integration)
+                Commands[Data.Integration.name] = Data.Code
+                console.log(`[*] Command ${Data.Integration.name} loaded! ${Directory}`)
+            }else{
+                fs.stat(`${Directory}/${File}`, (err, stats) => {
+                    if (stats.isDirectory()){
+                        LoadCommandsFromDirectory(`${Directory}/${File}`)
+                    }
+                });
+            }
+        })
+    });
+}
+
 client.on("ready",()=>{
     console.log(`[*] Logged in as ${client.user.username}`);
     UsedREST = new REST({ version: '10' }).setToken(Config.Token);
@@ -19,6 +43,7 @@ client.on("ready",()=>{
         console.log(`[*] Rest successfully updated!`)
     )
 })
+
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
     if (interaction.user.bot) return;
@@ -26,19 +51,5 @@ client.on('interactionCreate', async interaction => {
     Commands[interaction.commandName](interaction)
 });
 
-fs.readdir("./Commands", (err, files) => {
-    if (err){
-        console.log("[X] Invalid folder")
-    }
-
-    files.forEach(File =>{
-        if (File.endsWith(".js")){
-            const Data = require(`./Commands/${File}`)
-            CommandsShown.push(Data.Integration)
-            Commands[Data.Integration.name] = Data.Code
-            console.log(`[*] Command ${Data.Integration.name} loaded!`)
-        }
-    })
-});
-
+LoadCommandsFromDirectory("./Commands")
 client.login(Config.Token)
