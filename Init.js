@@ -1,4 +1,4 @@
-const { Client, Routes,REST } = require('discord.js');
+const { Client, Routes,REST, EmbedBuilder} = require('discord.js');
 const fs = require("fs")
 
 const Config = require("./Config.js")
@@ -48,7 +48,16 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
     if (interaction.user.bot) return;
 
-    Commands[interaction.commandName](interaction)
+    const Permissions = interaction.channel.permissionsFor(interaction.client.user).toArray()
+
+    if (Permissions.includes("ViewChannel")) {
+        Commands[interaction.commandName](interaction)
+    }else{
+        const ErrorEmbed = new EmbedBuilder()
+            .setColor(0x0099FF)
+            .setTitle("Error : view permissions.")
+        interaction.reply({ embeds: [ErrorEmbed] })
+    }
 });
 
 LoadCommandsFromDirectory("./Commands")
