@@ -17,9 +17,18 @@ client.on("ready",()=>{
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
+    if (interaction.user.bot) return;
 
-    if (interaction.commandName === 'ping') {
-        await interaction.reply('Tg');
+    switch (interaction.commandName){
+        case "ping":
+            await interaction.reply('pong');
+            break;
+        case "deez_what_sir":
+            await interaction.reply('deez nuts!');
+            break;
+        case "say":
+            await interaction.reply(interaction.options.get("message").value);
+            break;
     }
 });
 
