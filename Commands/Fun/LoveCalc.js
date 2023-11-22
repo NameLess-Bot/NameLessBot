@@ -49,7 +49,7 @@ module.exports = {
             }
 
             SelectedSentence = SelectedSentence.replace("X%", "**"+lovePercentage + "%**");
-            SelectedSentence = SelectedSentenceSelectedSentence.replace("User1", name1);
+            SelectedSentence = SelectedSentence.replace("User1", name1);
             SelectedSentence = SelectedSentence.replace("User2", name2);
 
             interaction.reply(SelectedSentence)
