@@ -1,0 +1,12 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Leo {
+  id Int @id(map: "PK__Leo__3213E83F5CA34D87")
+}

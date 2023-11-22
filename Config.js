@@ -1,6 +1,5 @@
 const { GatewayIntentBits } = require("discord.js");
 const dotenv = require('dotenv');
-
 // Chargez les variables d'environnement à partir du fichier .env
 dotenv.config();
 
