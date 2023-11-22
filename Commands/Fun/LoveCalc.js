@@ -48,10 +48,10 @@ module.exports = {
                 SelectedSetence = LowLove[Math.floor(Math.random() * (LowLove.length))]
             }
 
-            SelectedSetence = SelectedSetence.replace("X%", lovePercentage + "%");
-            SelectedSetence = SelectedSetence.replace("User1", name1);
-            SelectedSetence = SelectedSetence.replace("User2", name2);
+            SelectedSentence = SelectedSentence.replace("X%", "**"+lovePercentage + "%**");
+            SelectedSentence = SelectedSentence.replace("User1", name1);
+            SelectedSentence = SelectedSentence.replace("User2", name2);
 
-            interaction.reply(SelectedSetence)
+            interaction.reply(SelectedSentence)
         }
 }
