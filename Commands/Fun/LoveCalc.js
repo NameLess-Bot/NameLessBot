@@ -52,6 +52,6 @@ module.exports = {
             SelectedSentence = SelectedSentenceSelectedSentence.replace("User1", name1);
             SelectedSentence = SelectedSentence.replace("User2", name2);
 
-            interaction.reply(SelectedSetence)
+            interaction.reply(SelectedSentence)
         }
 }
