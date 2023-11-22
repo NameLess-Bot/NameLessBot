@@ -4,30 +4,29 @@ const Config = require("../../Config");
 
 module.exports = {
     Integration: new SlashCommandBuilder()
-        .setName("joke")
-        .setDescription("Have a good laugh!"),
+        .setName("programming-meme")
+        .setDescription("🤓"),
 
     Code: async (interaction) => {
         try {
-            const response = await fetch("https://jokes-by-api-ninjas.p.rapidapi.com/v1/jokes", {
+            const response = await fetch("https://programming-memes-images.p.rapidapi.com/v1/memes", {
                 method: 'GET',
                 headers: {
                     'X-RapidAPI-Key': Config.RapidAPI_Key,
-                    'X-RapidAPI-Host': 'jokes-by-api-ninjas.p.rapidapi.com'
+                    'X-RapidAPI-Host': 'programming-memes-images.p.rapidapi.com'
                 },
             });
 
             const data = await response.json();
 
             if (data.length > 0) {
-                if ("joke" in data[0]) {
-                    interaction.reply(data[0].joke);
-                } else {
-                    interaction.reply("Hmm, i can't think of any jokes right now, sorry!");
+                if ("image" in data[0]) {
+                    interaction.reply(data[0].image)
                 }
             }
+
         } catch (error){
-            console.log(`[!] Joke.js : An Error occured.\n${error}`)
+            console.log(`[!] ProgrammingMeme.js : An Error occured.\n${error}`)
         }
     }
 }
