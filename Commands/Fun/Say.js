@@ -4,11 +4,11 @@ const {Intents} = require("../../Config");
 module.exports = {
     Integration: new SlashCommandBuilder()
         .setName("say")
-        .setDescription("Faites donc parler le bot!")
+        .setDescription("Make the bot talk like a real human.")
         .addStringOption(Option=>{
             return Option
                 .setName("message")
-                .setDescription("le message à répéter.")
+                .setDescription("Your super interesting message!")
                 .setRequired(true)
         }),
 
