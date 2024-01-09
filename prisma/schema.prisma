@@ -7,6 +7,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Leo {
-    id Int @id @default(autoincrement())
+model Permissions {
+     key Int @id @default(autoincrement())
+     type Int
+     permissionLevel Int
+     serverId Int
+}
+
+model CommandsData {
+    key Int @id @default(autoincrement())
+    userId Int
+    data String
+    serverId Int
 }
