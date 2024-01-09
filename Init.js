@@ -1,45 +1,22 @@
-const { Client, Routes,REST, EmbedBuilder} = require('discord.js');
+const { Client, Routes,REST, EmbedBuilder,PermissionsBitField } = require('discord.js');
 const fs = require("fs")
-
 const Config = require("./Config.js")
 const {stat} = require("fs");
+const {LoadCommandsFromDirectory} = require("./Modules/LoadCommands");
 
-let UsedREST;
-let Commands = {}
-let CommandsShown = []
+const Commands = LoadCommandsFromDirectory(process.cwd()+'\\'+"Commands")
 
 const client = new Client({
     intents: Config.Intents
 });
 
-function LoadCommandsFromDirectory(Directory){
-    fs.readdir(Directory, (err, files) => {
-        if (err){
-            console.log("[X] Invalid folder")
-            return
-        }
-
-        files.forEach(File =>{
-            if (File.endsWith(".js")){
-                const Data = require(`${Directory}/${File}`)
-                CommandsShown.push(Data.Integration)
-                Commands[Data.Integration.name] = Data.Code
-                console.log(`[*] Command ${Data.Integration.name} loaded! ${Directory}`)
-            }else{
-                fs.stat(`${Directory}/${File}`, (err, stats) => {
-                    if (stats.isDirectory()){
-                        LoadCommandsFromDirectory(`${Directory}/${File}`)
-                    }
-                });
-            }
-        })
-    });
-}
-
 client.on("ready",()=>{
     console.log(`[*] Logged in as ${client.user.username}`);
     UsedREST = new REST({ version: '10' }).setToken(Config.Token);
-    UsedREST.put(Routes.applicationCommands(client.user.id), { body: CommandsShown }).then(
+
+    const IntegrationProperties = Object.values(Commands).map(command => command.Integration);
+
+    UsedREST.put(Routes.applicationCommands(client.user.id), { body: IntegrationProperties }).then(
         console.log(`[*] Rest successfully updated!`)
     )
 })
@@ -48,10 +25,12 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
     if (interaction.user.bot) return;
 
-    const Permissions = interaction.channel.permissionsFor(interaction.client.user).toArray()
+    const ChannelPermissions = interaction.channel.permissionsFor(interaction.client.user).toArray()
+    const Member = interaction.member
+    console.log(Member.permissions.has(PermissionsBitField.Flags.Administrator))
 
-    if (Permissions.includes("ViewChannel")) {
-        Commands[interaction.commandName](interaction)
+    if (ChannelPermissions.includes("ViewChannel")) {
+        Commands[interaction.commandName].Code(interaction)
     }else{
         const ErrorEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
@@ -60,5 +39,4 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-LoadCommandsFromDirectory("./Commands")
 client.login(Config.Token)

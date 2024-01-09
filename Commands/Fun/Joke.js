@@ -1,11 +1,14 @@
 const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 const {Intents} = require("../../Config");
 const Config = require("../../Config");
+const Permissions = require("../../PermissionENUM");
 
 module.exports = {
     Integration: new SlashCommandBuilder()
         .setName("joke")
         .setDescription("Have a good laugh!"),
+
+    Access : Permissions.Member,
 
     Code: async (interaction) => {
         try {

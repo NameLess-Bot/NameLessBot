@@ -1,11 +1,14 @@
 const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 const {Intents} = require("../../Config");
 const Config = require("../../Config");
+const Permissions = require("../../PermissionENUM");
 
 module.exports = {
     Integration: new SlashCommandBuilder()
         .setName("programming-meme")
-        .setDescription("🤓"),
+        .setDescription("🤓☝ Erm ackchually, TypeScript is infinitely superior to JavaScript!!"),
+
+    Access : Permissions.Member,
 
     Code: async (interaction) => {
         try {
@@ -30,3 +33,5 @@ module.exports = {
         }
     }
 }
+
+

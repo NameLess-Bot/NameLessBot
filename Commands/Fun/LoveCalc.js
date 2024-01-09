@@ -1,5 +1,6 @@
 const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 const {Intents} = require("../../Config");
+const Permissions = require("../../PermissionENUM");
 
 const HighLove = [
     "Wow! 💖 User1 and User2 are head over heels in love with each other, scoring an incredible X% on the love scale! 🚀",
@@ -34,24 +35,31 @@ module.exports = {
                 .setRequired(true)
         }),
 
+        Access : Permissions.Member,
+
         Code: (interaction) => {
             const lovePercentage = Math.floor(Math.random() * (100));
 
             const name1 = interaction.options.get("name1").value;
             const name2 = interaction.options.get("name2").value;
 
-            let SelectedSetence = "";
+            let SelectedSentence = "";
 
             if (lovePercentage > 50){
-                SelectedSetence = HighLove[Math.floor(Math.random() * (HighLove.length))]
+                SelectedSentence = HighLove[Math.floor(Math.random() * (HighLove.length))]
             }else{
-                SelectedSetence = LowLove[Math.floor(Math.random() * (LowLove.length))]
+                SelectedSentence = LowLove[Math.floor(Math.random() * (LowLove.length))]
             }
 
             SelectedSentence = SelectedSentence.replace("X%", "**"+lovePercentage + "%**");
             SelectedSentence = SelectedSentence.replace("User1", name1);
             SelectedSentence = SelectedSentence.replace("User2", name2);
 
-            interaction.reply(SelectedSentence)
+            const embed = new EmbedBuilder()
+                .setTitle("❤️ Love Calc ❤️")
+                .setDescription(SelectedSentence)
+                .setColor(0x00FFFF)
+
+            interaction.reply({ embeds: [embed.toJSON()] });
         }
 }

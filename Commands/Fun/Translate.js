@@ -1,5 +1,6 @@
 const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 const Config = require("../../Config");
+const Permissions = require("../../PermissionENUM");
 
 module.exports = {
     Integration: new SlashCommandBuilder()
@@ -23,6 +24,8 @@ module.exports = {
                 .setDescription("The target language. (Ex. FR/EN/RU/CN)")
                 .setRequired(true)
         }),
+
+        Access : Permissions.Member,
 
         Code : async (interaction) => {
             const message = interaction.options.get("message").value;
@@ -63,7 +66,7 @@ module.exports = {
                     const translatedText = data.data.translatedText;
 
                     const embed = new EmbedBuilder()
-                        .setTitle('Translate')
+                        .setTitle('<:GTranslate:1176828614835191849> Translate')
                         .setColor(0x93eeee)
                         .addFields(
                             {
