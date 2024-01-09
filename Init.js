@@ -3,7 +3,7 @@ const fs = require("fs")
 const Config = require("./Config.js")
 const {stat} = require("fs");
 const {LoadCommandsFromDirectory} = require("./Modules/LoadCommands");
-const PrismaDB = require('./Modules/Database');
+const {prisma,GetUserPermissionsByID} = require('./Modules/Database');
 
 const Commands = LoadCommandsFromDirectory(process.cwd()+'\\'+"Commands")
 
@@ -29,12 +29,17 @@ client.on('interactionCreate', async interaction => {
     const ChannelPermissions = interaction.channel.permissionsFor(interaction.client.user).toArray()
     const Member = interaction.member
 
-    if (ChannelPermissions.includes("ViewChannel")) {
-        Commands[interaction.commandName].Code(interaction,PrismaDB)
+    let BotPermissions = await GetUserPermissionsByID(parseInt(interaction.user.id),parseInt(interaction.guildId))
+    if (BotPermissions == null){
+        BotPermissions = 0
+    }
+
+    if (ChannelPermissions.includes("ViewChannel") && (BotPermissions <= Commands[interaction.commandName].Access || interaction.member.permissions.has(PermissionsBitField.Flags.Administrator))) {
+        Commands[interaction.commandName].Code(interaction,prisma)
     }else{
         const ErrorEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
-            .setTitle("Error : view permissions.")
+            .setTitle("Error : Invalid permissions.")
         interaction.reply({ embeds: [ErrorEmbed] })
     }
 });
