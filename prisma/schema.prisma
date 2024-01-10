@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Permissions {
-     key Int @id @default(autoincrement())
+     id Int @id @default(autoincrement())
+     userRoleId BigInt
      type Int
      permissionLevel Int
-     serverId Int
+     serverId BigInt
 }
 
 model CommandsData {
-    key Int @id @default(autoincrement())
-    userId Int
+    id Int @id @default(autoincrement())
+    userId BigInt
     data String
-    serverId Int
+    serverId BigInt
 }

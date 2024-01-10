@@ -2,6 +2,7 @@ const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = requi
 const {Intents} = require("../../Config");
 const Config = require("../../Config");
 const Permissions = require("../../PermissionENUM");
+const {DB_CreateUpdate} = require("../../Modules/Database")
 
 module.exports = {
     Integration: new SlashCommandBuilder()
@@ -13,16 +14,19 @@ module.exports = {
                 .setDescription("the user which is gonna get ranked.")
                 .setRequired(true)
         })
-        .addStringOption(Option=> {
-        return Option
-            .setName("role")
-            .setDescription("the bot permissions that will be given to said user.")
-            .setRequired(true)
-    }),
+        .addStringOption(option => {
+            return option.setName('role')
+                .setDescription('the role which will be given to the user')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Admin', value: 'Administrator' },
+                    { name: 'Moderator', value: 'Moderator' },
+                    { name: 'Member', value: 'Member' },
+          )}),
 
     Access : Permissions.Administrator,
 
-    Code: async (interaction,Database) => {
+    Code: async (interaction) => {
         const SelectedUser = interaction.options.get("user").user;
         const SelectedRole = interaction.options.get("role").value;
 
@@ -33,18 +37,27 @@ module.exports = {
             interaction.reply({embeds: [ErrorEmbed]})
             return
         }else{
-                Database.permissions.create({
-                    data: {
-                        id: parseInt(SelectedUser.id),
-                        type: 1,
-                        permissionLevel: Permissions[SelectedRole],
-                        serverId: parseInt(interaction.guildId),
-                    },
-                })
-                const SuccessEmbed = new EmbedBuilder()
-                    .setColor(0x0099FF)
-                    .setTitle("Success : Role updated!")
-                interaction.reply({embeds: [SuccessEmbed]})
+            DB_CreateUpdate(
+               "permissions",
+               {
+                   userRoleId: parseInt(SelectedUser.id),
+                   serverId: parseInt(interaction.guildId),
+               },
+               {
+                   userRoleId: parseInt(SelectedUser.id),
+                   type: 1,
+                   permissionLevel: Permissions[SelectedRole],
+                   serverId: parseInt(interaction.guildId),
+               },
+               {
+                   permissionLevel: Permissions[SelectedRole],
+               },
+               )
+
+            const SuccessEmbed = new EmbedBuilder()
+                .setColor(0x0099FF)
+                .setTitle("Success : Role updated!")
+            interaction.reply({embeds: [SuccessEmbed]})
         }
     }
 }

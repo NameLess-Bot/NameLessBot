@@ -2,24 +2,36 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-async function GetUserPermissionsByID(userId, serverId) {
-    try {
-        const permissions = await prisma.permissions.findFirst({
+async function DB_GetUserPermissionsByID(userId, serverId) {
+    const permissions = await prisma.permissions.findFirst({
             where: {
-                id:userId,
+                userRoleId:userId,
                 serverId:serverId,
             },
         });
-        return permissions;
-    } catch (error) {
-        console.error('Error retrieving permissions:', error);
-        throw error;
-    } finally {
-        await prisma.$disconnect();
+        if (permissions != null){
+            return permissions.id
+        }
+}
+
+async function DB_CreateUpdate(TableName,Find,Create,Update) {
+    const row = await prisma[TableName].findFirst({
+        where: Find,
+    });
+    if (row == null) {
+        await prisma[TableName].create({
+            data: Create,
+        })
+    } else {
+        await prisma[TableName].updateMany({
+            where: Find,
+            data: Update,
+        });
     }
 }
 
 module.exports = {
     prisma,
-    GetUserPermissionsByID,
+    DB_GetUserPermissionsByID,
+    DB_CreateUpdate,
 };
