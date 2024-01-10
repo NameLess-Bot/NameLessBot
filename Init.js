@@ -34,8 +34,6 @@ client.on('interactionCreate', async interaction => {
         BotPermissions = 0
     }
 
-    console.log(BotPermissions,interaction.user.username)
-
     if (ChannelPermissions.includes("ViewChannel") && (BotPermissions >= Commands[interaction.commandName].Access || interaction.member.permissions.has(PermissionsBitField.Flags.Administrator))) {
         Commands[interaction.commandName].Code(interaction)
     }else{

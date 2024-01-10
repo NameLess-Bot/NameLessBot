@@ -6,7 +6,7 @@ const {DB_CreateUpdate} = require("../../Modules/Database")
 
 module.exports = {
     Integration: new SlashCommandBuilder()
-        .setName("setuserrole")
+        .setName("setuserpermissions")
         .setDescription("give a certain user a set level of permission.")
         .addUserOption(Option=>{
             return Option
@@ -27,37 +27,41 @@ module.exports = {
     Access : Permissions.Administrator,
 
     Code: async (interaction) => {
-        const SelectedUser = interaction.options.get("user").user;
-        const SelectedRole = interaction.options.get("role").value;
+        try {
+            const SelectedUser = interaction.options.get("user").user;
+            const SelectedRole = interaction.options.get("role").value;
 
-        if (Permissions[SelectedRole] == null) {
-            const ErrorEmbed = new EmbedBuilder()
-                .setColor(0x0099FF)
-                .setTitle("Error : This permission level does not exist.")
-            interaction.reply({embeds: [ErrorEmbed]})
-            return
-        }else{
-            DB_CreateUpdate(
-               "permissions",
-               {
-                   userRoleId: parseInt(SelectedUser.id),
-                   serverId: parseInt(interaction.guildId),
-               },
-               {
-                   userRoleId: parseInt(SelectedUser.id),
-                   type: 1,
-                   permissionLevel: Permissions[SelectedRole],
-                   serverId: parseInt(interaction.guildId),
-               },
-               {
-                   permissionLevel: Permissions[SelectedRole],
-               },
-               )
+            if (Permissions[SelectedRole] == null) {
+                const ErrorEmbed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle("Error : This permission level does not exist.")
+                interaction.reply({embeds: [ErrorEmbed]})
+                return
+            } else {
+                await DB_CreateUpdate(
+                    "permissions",
+                    {
+                        userRoleId: parseInt(SelectedUser.id),
+                        serverId: parseInt(interaction.guildId),
+                    },
+                    {
+                        userRoleId: parseInt(SelectedUser.id),
+                        type: 1,
+                        permissionLevel: Permissions[SelectedRole],
+                        serverId: parseInt(interaction.guildId),
+                    },
+                    {
+                        permissionLevel: Permissions[SelectedRole],
+                    },
+                )
 
-            const SuccessEmbed = new EmbedBuilder()
-                .setColor(0x0099FF)
-                .setTitle("Success : Role updated!")
-            interaction.reply({embeds: [SuccessEmbed]})
+                const SuccessEmbed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle("Success : Role updated!")
+                interaction.reply({embeds: [SuccessEmbed]})
+            }
+        }catch (error){
+            console.log(`[!] SetUserPermission.js : An Error occured.\n${error}`)
         }
     }
 }
