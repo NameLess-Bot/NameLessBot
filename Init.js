@@ -3,7 +3,7 @@ const fs = require("fs")
 const Config = require("./Config.js")
 const {stat} = require("fs");
 const {LoadCommandsFromDirectory} = require("./Modules/LoadCommands");
-const {prisma,DB_GetUserPermissionsByID} = require('./Modules/Database');
+const {DB_GetUserPermissionsByID} = require('./Modules/Database');
 
 const Commands = LoadCommandsFromDirectory(process.cwd()+'\\'+"Commands")
 
@@ -30,9 +30,6 @@ client.on('interactionCreate', async interaction => {
     const Member = interaction.member
 
     let BotPermissions = await DB_GetUserPermissionsByID(parseInt(interaction.user.id),parseInt(interaction.guildId))
-    if (BotPermissions == null){
-        BotPermissions = 0
-    }
 
     if (ChannelPermissions.includes("ViewChannel") && (BotPermissions >= Commands[interaction.commandName].Access || interaction.member.permissions.has(PermissionsBitField.Flags.Administrator))) {
         Commands[interaction.commandName].Code(interaction)

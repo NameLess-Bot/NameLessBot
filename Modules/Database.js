@@ -11,6 +11,8 @@ async function DB_GetUserPermissionsByID(userId, serverId) {
         });
         if (permissions != null){
             return permissions.permissionLevel
+        }else{
+            return 0
         }
 }
 
