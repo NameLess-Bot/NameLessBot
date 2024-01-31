@@ -11,12 +11,12 @@ module.exports = {
         .addUserOption(Option=>{
             return Option
                 .setName("user")
-                .setDescription("the user which is gonna get ranked.")
+                .setDescription("the user which is gonna receive the permissions.")
                 .setRequired(true)
         })
         .addStringOption(option => {
-            return option.setName('role')
-                .setDescription('the role which will be given to the user')
+            return option.setName('permissions')
+                .setDescription('the permissions which will be given to the user')
                 .setRequired(true)
                 .addChoices(
                     { name: 'Admin', value: 'Administrator' },
@@ -29,9 +29,9 @@ module.exports = {
     Code: async (interaction) => {
         try {
             const SelectedUser = interaction.options.get("user").user;
-            const SelectedRole = interaction.options.get("role").value;
+            const SelectedPermissions = interaction.options.get("permissions").value;
 
-            if (Permissions[SelectedRole] == null) {
+            if (Permissions[SelectedPermissions] == null) {
                 const ErrorEmbed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle("Error : This permission level does not exist.")
@@ -47,17 +47,17 @@ module.exports = {
                     {
                         userRoleId: parseInt(SelectedUser.id),
                         type: 1,
-                        permissionLevel: Permissions[SelectedRole],
+                        permissionLevel: Permissions[SelectedPermissions],
                         serverId: parseInt(interaction.guildId),
                     },
                     {
-                        permissionLevel: Permissions[SelectedRole],
+                        permissionLevel: Permissions[SelectedPermissions],
                     },
                 )
 
                 const SuccessEmbed = new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle("Success : Role updated!")
+                    .setTitle("Success : Permissions updated!")
                 interaction.reply({embeds: [SuccessEmbed]})
             }
         }catch (error){

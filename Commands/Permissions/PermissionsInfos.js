@@ -17,7 +17,6 @@ module.exports = {
             for (const [key, value] of Object.entries(Permissions)) {
                 if (value == Permission){
                     Permission = key
-                    console.log(value)
                     break
                 }
             }
