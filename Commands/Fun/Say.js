@@ -1,5 +1,6 @@
 const { ApplicationCommandOptionType, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 const {Intents} = require("../../Config");
+const Permissions = require("../../PermissionENUM");
 
 module.exports = {
     Integration: new SlashCommandBuilder()
@@ -11,6 +12,8 @@ module.exports = {
                 .setDescription("Your super interesting message!")
                 .setRequired(true)
         }),
+
+    Access : Permissions.Moderator,
 
     Code: (interaction) => {
         interaction.reply(interaction.options.get("message").value);
